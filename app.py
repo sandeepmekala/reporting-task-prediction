@@ -2,32 +2,27 @@ from flask import Flask
 from flask import jsonify
 from flask import request
 from sklearn import tree
+import pandas as pd
+import numpy as np
 import pickle
 import pydotplus 
 
 app = Flask(__name__)
 
-X = [	
-		[1, 10, 120],
-		[1, 12, 150],
-		[0, 3, 100],
-		[0, 15, 150],
-		[1, 4, 90],
-		[1, 11, 130],
-		[1, 12, 160],
-		[0, 4, 100],
-		[0, 14, 140], 
-		[1, 5, 80]
-	]
+df = pd.read_csv("data/reporting_task_prediction.csv")
+df.replace(to_replace='yes', value=1, inplace=True)
+df.replace(to_replace='no', value=0, inplace=True)
+df.replace(to_replace='good', value=1, inplace=True)
+df.replace(to_replace='Not good', value=0, inplace=True)
 
-Y = ['yes', 'yes', 'no', 'yes', 'no', 'yes', 'yes', 'no', 
-	'yes', 'no']
+X = np.array(df.drop(['WillMissReportDueDate'], axis=1))
+y = np.array(df['WillMissReportDueDate'])
 
 @app.route('/train',methods=['GET'])
 def startTraining():
 	clf = tree.DecisionTreeClassifier()
 
-	clf.fit(X,Y)
+	clf.fit(X,y)
 
 	#storing the classifier
 	with open('model.pickle', 'wb') as f:
@@ -39,9 +34,9 @@ def startTest():
 	pickle_in = open('model.pickle', 'rb')
 	clf = pickle.load(pickle_in)
 
-	prediction = clf.predict([[1,6,170]])
+	prediction = clf.predict([[1, 11, 130, 1, 0]])
 	print(prediction)
-	return jsonify({'response':'success', 'result':prediction[0]})
+	return jsonify({'response':'success', 'result':str(prediction[0])})
 
 @app.route('/pdf',methods=['GET'])
 def generatePdf():	

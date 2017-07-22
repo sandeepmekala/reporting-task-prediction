@@ -1,0 +1,11 @@
+IsMissedLastYear,LeavesInMonth,BusyHoursInMonth,PreviousMonth,SystemInfo,WillMissReportDueDate
+yes,10,120,yes,good,yes
+yes,12,150,yes,Not good,yes
+no,3,100,no,good,no
+no,15,150,no,Not good,yes
+yes,4,90,yes,good,no
+yes,11,130,yes,Not good,yes
+yes,12,160,no,good,yes
+no,4,100,no,Not good,no
+no,14,140,yes,good,yes
+yes,5,80,yes,Not good,no
