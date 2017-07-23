@@ -18,6 +18,8 @@ df.replace(to_replace='Not good', value=0, inplace=True)
 X = np.array(df.drop(['WillMissReportDueDate'], axis=1))
 y = np.array(df['WillMissReportDueDate'])
 
+print(df)
+
 @app.route('/train',methods=['GET'])
 def startTraining():
 	clf = tree.DecisionTreeClassifier()
@@ -29,12 +31,22 @@ def startTraining():
 		pickle.dump(clf, f)
 	return jsonify({'response':'success'})
 
-@app.route('/test',methods=['GET'])
+@app.route('/test',methods=['POST'])
 def startTest():
+	print(request.json['IsMissedLastYear'])
+	print(request.json['LeavesInMonth'])
+	print(request.json['BusyHoursInMonth'])
+	print(request.json['PreviousMonth'])
+	print(request.json['SystemInfo'])
+	y_test = np.array([request.json['IsMissedLastYear'], request.json['LeavesInMonth'], 
+		request.json['BusyHoursInMonth'], request.json['PreviousMonth'], request.json['SystemInfo']])
+
+	print(y_test)
+
 	pickle_in = open('model.pickle', 'rb')
 	clf = pickle.load(pickle_in)
 
-	prediction = clf.predict([[1, 11, 130, 1, 0]])
+	prediction = clf.predict([y_test])
 	print(prediction)
 	return jsonify({'response':'success', 'result':str(prediction[0])})
 
