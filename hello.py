@@ -49,7 +49,7 @@ def createEmp():
 def deleteEmp(empId):
     em = [ emp for emp in empDB if (emp['id'] == empId) ]
     if len(em) == 0:
-       abort(404)
+       return jsonify({'response':'Failed'})
     empDB.remove(em[0])
     return jsonify({'response':'Success'})
 
